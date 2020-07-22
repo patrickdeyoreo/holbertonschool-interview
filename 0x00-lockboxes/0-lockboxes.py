@@ -13,10 +13,10 @@ def canUnlockAll(boxes):
     Return:
         True if the boxes can be unlocked; False otherwise.
     """
-    locked = {*range(len(boxes))}
-    unlock = {0}
-    while locked and unlock:
-        unlock &= locked
-        locked -= unlock
-        unlock = {key for box in unlock for key in boxes[box]}
-    return not locked
+    locked = set(range(len(boxes)))
+    opened = {0}
+    while len(locked) != 0 and len(opened) != 0:
+        opened &= locked
+        locked -= opened
+        opened = {key for box in opened for key in boxes[box]}
+    return len(locked) == 0
