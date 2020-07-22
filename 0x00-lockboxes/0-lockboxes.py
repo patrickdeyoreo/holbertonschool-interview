@@ -15,8 +15,8 @@ def canUnlockAll(boxes):
     """
     locked = set(range(len(boxes)))
     opened = {0}
-    while len(locked) != 0 and len(opened) != 0:
+    while locked and opened:
         opened &= locked
         locked -= opened
         opened = {key for box in opened for key in boxes[box]}
-    return len(locked) == 0
+    return not locked
