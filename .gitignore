@@ -1,0 +1,8 @@
+*~
+*.sw[op]
+*.py[cod]
+*.o
+*.so
+.tags
+.DS_Store
+.vscode
