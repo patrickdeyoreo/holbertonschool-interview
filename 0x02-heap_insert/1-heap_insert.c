@@ -1,4 +1,7 @@
 #include "binary_trees.h"
+#include <stdio.h>
+
+#define SWAP(m, n) ((m) ^= (n), (n) ^= (m), (m) ^= (n))
 
 /**
  * enqueue - enqueue a binary tree node
@@ -34,21 +37,22 @@ static queue_t *enqueue(queue_t **rear, binary_tree_t *value)
 /**
  * dequeue - dequeue a binary tree node
  * @rear: address of a pointer to the rear of a queue
- * Return: address of the dequeued binary tree node
+ * Return: If empty return NULL. Otherwise return a pointer to the queued node.
  */
 static binary_tree_t *dequeue(queue_t **rear)
 {
-	queue_t *front = NULL;
+	queue_t *temp = NULL;
 	binary_tree_t *root = NULL;
 
 	if (rear && *rear)
 	{
-		root = front->root;
-		front = (*rear)->next;
-		(*rear)->next = front->next;
-		free(front);
-		if (front == *rear)
+		temp = (*rear)->next;
+		if (temp == *rear)
 			*rear = NULL;
+		else
+			(*rear)->next = temp->next;
+		root = temp->root;
+		free(temp);
 	}
 	return (root);
 }
@@ -57,7 +61,47 @@ static binary_tree_t *dequeue(queue_t **rear)
  * heap_insert - insert a value into a max binary heap
  * @root: address of a pointer to the root node
  * @value: integer to be inserted
+ * Return: On failure return NULL. Otherwise return a pointer to the new node.
  */
 heap_t *heap_insert(heap_t **root, int value)
 {
+	queue_t *rear = NULL;
+	heap_t *temp = NULL;
+
+	if (root)
+	{
+		if (*root)
+		{
+			if (enqueue(&rear, *root))
+			{
+				while ((temp = dequeue(&rear)))
+				{
+					root = &temp->left;
+					if (!*root)
+						break;
+					root = &temp->right;
+					if (!*root)
+						break;
+					root = NULL;
+					if (!(enqueue(&rear, temp->left) && enqueue(&rear, temp->right)))
+						break;
+				}
+				while (rear)
+					dequeue(&rear);
+			}
+		}
+		if (root)
+		{
+			temp = *root = binary_tree_node(temp, value);
+			if (temp)
+			{
+				while (temp->parent && temp->n > temp->parent->n)
+				{
+					SWAP(temp->n, temp->parent->n);
+					temp = temp->parent;
+				}
+			}
+		}
+	}
+	return (temp);
 }
