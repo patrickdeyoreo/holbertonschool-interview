@@ -3,6 +3,8 @@
 
 #include <stdlib.h>
 
+#define SWAP(m, n) ((m) ^= (n), (n) ^= (m), (m) ^= (n))
+
 /**
  * struct binary_tree_s - Binary tree node
  *

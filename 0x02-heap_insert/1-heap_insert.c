@@ -1,8 +1,6 @@
 #include "binary_trees.h"
 #include <stdio.h>
 
-#define SWAP(m, n) ((m) ^= (n), (n) ^= (m), (m) ^= (n))
-
 /**
  * enqueue - enqueue a binary tree node
  * @rear: address of a pointer to the rear of a queue
@@ -37,22 +35,54 @@ static queue_t *enqueue(queue_t **rear, binary_tree_t *value)
 /**
  * dequeue - dequeue a binary tree node
  * @rear: address of a pointer to the rear of a queue
- * Return: If empty return NULL. Otherwise return a pointer to the queued node.
+ * Return: If empty return NULL. Otherwise return a pointer to the queued item.
  */
 static binary_tree_t *dequeue(queue_t **rear)
 {
-	queue_t *temp = NULL;
+	queue_t *front = NULL;
 	binary_tree_t *root = NULL;
 
 	if (rear && *rear)
 	{
-		temp = (*rear)->next;
-		if (temp == *rear)
+		front = (*rear)->next;
+		if (front == *rear)
 			*rear = NULL;
 		else
-			(*rear)->next = temp->next;
-		root = temp->root;
-		free(temp);
+			(*rear)->next = front->next;
+		root = front->root;
+		free(front);
+	}
+	return (root);
+}
+
+/**
+ * find_next_insertion - find the next insertion location in a complete tree
+ * @root: address of a pointer to the root of a heap
+ * @parent: address of a pointer in which to store the parent node (if any)
+ * Return: address of the parent's pointer to the next insertion location
+ */
+static binary_tree_t **find_next_insertion(heap_t **root, heap_t **parent)
+{
+	queue_t *rear = NULL;
+
+	if (root && parent && enqueue(&rear, *root))
+	{
+		while ((*parent = dequeue(&rear)))
+		{
+			root = &(*parent)->left;
+			if (!*root)
+				break;
+			root = &(*parent)->right;
+			if (!*root)
+				break;
+			root = NULL;
+			if (!enqueue(&rear, (*parent)->left))
+				break;
+			if (!enqueue(&rear, (*parent)->right))
+				break;
+		}
+		while (dequeue(&rear))
+			;
 	}
 	return (root);
 }
@@ -65,41 +95,18 @@ static binary_tree_t *dequeue(queue_t **rear)
  */
 heap_t *heap_insert(heap_t **root, int value)
 {
-	queue_t *rear = NULL;
 	heap_t *temp = NULL;
 
+	root = find_next_insertion(root, &temp);
 	if (root)
 	{
-		if (*root)
+		temp = *root = binary_tree_node(temp, value);
+		if (temp)
 		{
-			if (enqueue(&rear, *root))
+			while (temp->parent && temp->n > temp->parent->n)
 			{
-				while ((temp = dequeue(&rear)))
-				{
-					root = &temp->left;
-					if (!*root)
-						break;
-					root = &temp->right;
-					if (!*root)
-						break;
-					root = NULL;
-					if (!(enqueue(&rear, temp->left) && enqueue(&rear, temp->right)))
-						break;
-				}
-				while (rear)
-					dequeue(&rear);
-			}
-		}
-		if (root)
-		{
-			temp = *root = binary_tree_node(temp, value);
-			if (temp)
-			{
-				while (temp->parent && temp->n > temp->parent->n)
-				{
-					SWAP(temp->n, temp->parent->n);
-					temp = temp->parent;
-				}
+				SWAP(temp->n, temp->parent->n);
+				temp = temp->parent;
 			}
 		}
 	}
