@@ -68,7 +68,7 @@ static bool add_sandpile(int grid1[3][3], int grid2[3][3])
 
 
 /**
- * topple - topple a sandpile
+ * topple_sandpile - topple a sandpile
  * @grid: the sandpile to topple
  * Return: true if grid is stable, otherwise false
  */
@@ -95,7 +95,7 @@ static bool topple_sandpile(int grid[3][3])
 			}
 		}
 	}
-	return add_sandpile(grid, temp);
+	return (add_sandpile(grid, temp));
 }
 
 
