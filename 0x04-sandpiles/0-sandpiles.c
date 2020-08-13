@@ -48,9 +48,9 @@ static bool is_stable(int grid[3][3])
 
 /**
  * add_sandpile - add two sandpiles
- * @grid1: the first sandpile (destination)
- * @grid2: the second sandpile
- * Return: true if grid1 is stable, otherwise false
+ * @grid1: the sandpile to add to
+ * @grid2: the sandpile to add from
+ * Return: true if grid1 is stable after addition, otherwise false
  */
 static bool add_sandpile(int grid1[3][3], int grid2[3][3])
 {
@@ -101,8 +101,8 @@ static bool topple_sandpile(int grid[3][3])
 
 /**
  * sandpiles_sum - compute the sum of two sandpiles
- * @grid1: the first sandpile (destination)
- * @grid2: the second sandpile
+ * @grid1: the sandpile to add to
+ * @grid2: the sandpile to add from
  */
 void sandpiles_sum(int grid1[3][3], int grid2[3][3])
 {
