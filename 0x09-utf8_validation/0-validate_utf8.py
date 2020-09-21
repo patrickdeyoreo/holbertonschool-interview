@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Determine if a given sequence of integers represents valid UTF-8 data."""
+"""Check if a sequence of integers represents a valid UTF-8 encoding."""
 # pylint: disable=invalid-name
 
 
