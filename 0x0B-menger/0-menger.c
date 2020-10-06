@@ -13,7 +13,7 @@
  * Return: If memory allocation fails, return NULL.
  * Otherwise, return a pointer to a dynamically-allocated menger sponge.
  */
-char **menger_alloc(size_t size)
+static char **menger_alloc(size_t size)
 {
 	size_t index = 0;
 	char **grid = malloc(sizeof(*grid) * size);
@@ -49,7 +49,7 @@ char **menger_alloc(size_t size)
  * @col_0: starting y coordinate
  * @col_1: ending y coordinate
  */
-void menger_fill(
+static void menger_fill(
 	char **grid, size_t row_0, size_t row_1, size_t col_0, size_t col_1)
 {
 	int p = (row_1 - row_0) / 3;
@@ -80,7 +80,7 @@ void menger_fill(
  * @grid: dynamically-allocated menger sponge
  * @size: length of each side
  */
-void menger_free(char **grid, size_t size)
+static void menger_free(char **grid, size_t size)
 {
 	size_t index = 0;
 
@@ -95,7 +95,7 @@ void menger_free(char **grid, size_t size)
  * @grid: filled menger sponge
  * @size: length of each side
  */
-void menger_print(char **grid, size_t size)
+static void menger_print(char **grid, size_t size)
 {
 	size_t index = 0;
 
@@ -107,7 +107,7 @@ void menger_print(char **grid, size_t size)
 }
 
 /**
- * menger - print a 2-dimensional menger sponge
+ * menger - construct and print a 2-dimensional menger sponge
  *
  * @level: fractal depth
  */
