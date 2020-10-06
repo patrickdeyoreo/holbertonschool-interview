@@ -6,111 +6,125 @@
 #include "menger.h"
 
 /**
- * allocate_lines - allocate and fill a 2-dimensional square grid of characters
- * @c: fill character
- * @n: length of each side
+ * menger_alloc - allocate and initialize a 2-dimensional menger sponge
+ *
+ * @size: length of each side
  *
  * Return: If memory allocation fails, return NULL.
- * Otherwise, return a pointer to a dynamically allocated array.
+ * Otherwise, return a pointer to a dynamically-allocated menger sponge.
  */
-char **allocate_lines(char c, size_t n)
+char **menger_alloc(size_t size)
 {
 	size_t index = 0;
-	char **lines = malloc(sizeof(*lines) * n);
+	char **grid = malloc(sizeof(*grid) * size);
 
-	if (!lines)
+	if (!grid)
 		return (NULL);
 
-	while (index < n)
+	while (index < size)
 	{
-		lines[index] = malloc(sizeof(**lines) * n);
+		grid[index] = malloc(sizeof(**grid) * size);
 
-		if (!lines[index])
+		if (!grid[index])
 		{
 			while (index--)
 			{
-				free(lines[index]);
+				free(grid[index]);
 			}
-			free(lines);
+			free(grid);
 			return (NULL);
 		}
 
-		memset(lines[index++], c, n);
+		memset(grid[index++], BLANK_CHARACTER, size);
 	}
-	return (lines);
+	return (grid);
 }
 
 /**
  * menger_fill - recursively fill a 2-dimensional menger sponge
  *
- * @lines: empty menger sponge
- * @x_i: starting x coordinate
- * @x_o: ending x coordinate
- * @y_i: starting y coordinate
- * @y_o: ending y coordinate
+ * @grid: initialized menger sponge
+ * @row_0: starting x coordinate
+ * @row_1: ending x coordinate
+ * @col_0: starting y coordinate
+ * @col_1: ending y coordinate
  */
-void menger_fill(char **lines, size_t x_0, size_t x_1, size_t y_0, size_t y_1)
+void menger_fill(
+	char **grid, size_t row_0, size_t row_1, size_t col_0, size_t col_1)
 {
-	int p = (x_1 - x_0) / 3;
+	int p = (row_1 - row_0) / 3;
 
 	if (p)
 	{
-		menger_fill(lines, x_0, x_0 + p, y_0, y_0 + p);
-		menger_fill(lines, x_1 - p, x_1, y_0, y_0 + p);
+		menger_fill(grid, row_0, row_0 + p, col_0, col_0 + p);
+		menger_fill(grid, row_1 - p, row_1, col_0, col_0 + p);
 
-		menger_fill(lines, x_0, x_0 + p, y_1 - p, y_1);
-		menger_fill(lines, x_1 - p, x_1, y_1 - p, y_1);
+		menger_fill(grid, row_0, row_0 + p, col_1 - p, col_1);
+		menger_fill(grid, row_1 - p, row_1, col_1 - p, col_1);
 
-		menger_fill(lines, x_0, x_0 + p, y_0 + p, y_1 - p);
-		menger_fill(lines, x_1 - p, x_1, y_0 + p, y_1 - p);
+		menger_fill(grid, row_0, row_0 + p, col_0 + p, col_1 - p);
+		menger_fill(grid, row_1 - p, row_1, col_0 + p, col_1 - p);
 
-		menger_fill(lines, x_0 + p, x_0 + 2 * p, y_0, y_0 + p);
-		menger_fill(lines, x_0 + p, x_0 + 2 * p, y_1 - p, y_1);
+		menger_fill(grid, row_0 + p, row_0 + 2 * p, col_0, col_0 + p);
+		menger_fill(grid, row_0 + p, row_0 + 2 * p, col_1 - p, col_1);
 	}
 	else
 	{
-		lines[x_0][y_0] = FILL_CHARACTER;
+		grid[row_0][col_0] = FILL_CHARACTER;
 	}
 }
 
+/**
+ * menger_free - free a 2-dimensional menger sponge
+ *
+ * @grid: dynamically-allocated menger sponge
+ * @size: length of each side
+ */
+void menger_free(char **grid, size_t size)
+{
+	size_t index = 0;
+
+	while (index < size)
+		free(grid[index++]);
+	free(grid);
+}
 
 /**
- * menger_print - print 2-dimensional menger sponge
+ * menger_print - print a 2-dimensional menger sponge
  *
- * @lines: filled menger sponge
- * @n: length of each side
+ * @grid: filled menger sponge
+ * @size: length of each side
  */
-void menger_print(char **lines, size_t n)
+void menger_print(char **grid, size_t size)
 {
-	while (n--)
-		fwrite(*lines++, sizeof(**lines), n, stdout);
+	size_t index = 0;
+
+	while (index < size)
+	{
+		fwrite(grid[index++], sizeof(**grid), size, stdout);
+		fputc('\n', stdout);
+	}
 }
 
 /**
  * menger - print a 2-dimensional menger sponge
  *
- * @level: fractal depth of the sponge
+ * @level: fractal depth
  */
 void menger(int level)
 {
-	size_t n = 0, i = 0;
-	char **lines = NULL;
+	size_t size = 0;
+	char **grid = NULL;
 
 	if (level < 0)
 		return;
 
-	n = pow(3, level);
-	lines = allocate_lines(' ', n);
-	if (!lines)
+	size = pow(3, level);
+	grid = menger_alloc(size);
+	if (!grid)
 		return;
 
-	menger_fill(lines, 0, n, 0, n);
-
-	for (i = 0; i < n; i += 1)
-	{
-		fwrite(lines[i], sizeof(**lines), n, stdout);
-		fputc('\n', stdout);
-		free(lines[i]);
-	}
-	free(lines);
+	menger_fill(grid, 0, size, 0, size);
+	menger_print(grid, size);
+	menger_free(grid, size);
 }
