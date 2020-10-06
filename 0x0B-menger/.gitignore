@@ -1,0 +1,12 @@
+# blacklist everything except directories
+*
+!*/
+
+# whitelist gitignore files
+!.gitignore
+
+# whitelist README files
+!README.md
+
+# whitelist C source code and header files
+!*.[ch]

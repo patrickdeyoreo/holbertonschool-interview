@@ -49,26 +49,27 @@ char **allocate_lines(char c, size_t n)
  * @y_i: starting y coordinate
  * @y_o: ending y coordinate
  */
-void menger_fill(char **lines, size_t x_i, size_t x_o, size_t y_i, size_t y_o)
+void menger_fill(char **lines, size_t x_0, size_t x_1, size_t y_0, size_t y_1)
 {
-	int p = (x_o - x_i) / 3;
+	int p = (x_1 - x_0) / 3;
 
 	if (p)
 	{
-		menger_fill(lines, x_i, x_i + p, y_i, y_i + p);
-		menger_fill(lines, x_i, x_i + p, y_i + p, y_o - p);
-		menger_fill(lines, x_i, x_i + p, y_o - p, y_o);
+		menger_fill(lines, x_0, x_0 + p, y_0, y_0 + p);
+		menger_fill(lines, x_1 - p, x_1, y_0, y_0 + p);
 
-		menger_fill(lines, x_i + p, x_i + p * 2, y_i, y_i + p);
-		menger_fill(lines, x_i + p, x_i + p * 2, y_o - p, y_o);
+		menger_fill(lines, x_0, x_0 + p, y_1 - p, y_1);
+		menger_fill(lines, x_1 - p, x_1, y_1 - p, y_1);
 
-		menger_fill(lines, x_o - p, x_o, y_i, y_i + p);
-		menger_fill(lines, x_o - p, x_o, y_i + p, y_o - p);
-		menger_fill(lines, x_o - p, x_o, y_o - p, y_o);
+		menger_fill(lines, x_0, x_0 + p, y_0 + p, y_1 - p);
+		menger_fill(lines, x_1 - p, x_1, y_0 + p, y_1 - p);
+
+		menger_fill(lines, x_0 + p, x_0 + 2 * p, y_0, y_0 + p);
+		menger_fill(lines, x_0 + p, x_0 + 2 * p, y_1 - p, y_1);
 	}
 	else
 	{
-		lines[x_i][y_i] = FILL_CHARACTER;
+		lines[x_0][y_0] = FILL_CHARACTER;
 	}
 }
 
