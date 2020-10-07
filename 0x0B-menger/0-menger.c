@@ -8,7 +8,7 @@
 /**
  * menger_fill - recursively fill a 2-dimensional menger sponge
  *
- * @grid: initialized menger sponge
+ * @grid: new menger sponge
  * @row_0: starting x coordinate
  * @row_1: ending x coordinate
  * @col_0: starting y coordinate
@@ -60,7 +60,7 @@ static void menger_free(char **grid, size_t size)
  * @size: length of each side
  *
  * Return: If memory allocation fails, return NULL.
- * Otherwise, return a pointer to a dynamically-allocated menger sponge.
+ * Otherwise, return a pointer to a new menger sponge.
  */
 static char **menger_new(size_t size)
 {
