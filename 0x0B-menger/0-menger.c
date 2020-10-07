@@ -6,41 +6,6 @@
 #include "menger.h"
 
 /**
- * menger_alloc - allocate and initialize a 2-dimensional menger sponge
- *
- * @size: length of each side
- *
- * Return: If memory allocation fails, return NULL.
- * Otherwise, return a pointer to a dynamically-allocated menger sponge.
- */
-static char **menger_alloc(size_t size)
-{
-	size_t index = 0;
-	char **grid = malloc(sizeof(*grid) * size);
-
-	if (!grid)
-		return (NULL);
-
-	while (index < size)
-	{
-		grid[index] = malloc(sizeof(**grid) * size);
-
-		if (!grid[index])
-		{
-			while (index--)
-			{
-				free(grid[index]);
-			}
-			free(grid);
-			return (NULL);
-		}
-
-		memset(grid[index++], BLANK_CHARACTER, size);
-	}
-	return (grid);
-}
-
-/**
  * menger_fill - recursively fill a 2-dimensional menger sponge
  *
  * @grid: initialized menger sponge
@@ -90,6 +55,37 @@ static void menger_free(char **grid, size_t size)
 }
 
 /**
+ * menger_new - allocate and initialize a 2-dimensional menger sponge
+ *
+ * @size: length of each side
+ *
+ * Return: If memory allocation fails, return NULL.
+ * Otherwise, return a pointer to a dynamically-allocated menger sponge.
+ */
+static char **menger_new(size_t size)
+{
+	size_t index = 0;
+	char **grid = malloc(sizeof(*grid) * size);
+
+	if (!grid)
+		return (NULL);
+
+	while (index < size)
+	{
+		grid[index] = malloc(sizeof(**grid) * size);
+
+		if (!grid[index])
+		{
+			menger_free(grid, index);
+			return (NULL);
+		}
+
+		memset(grid[index++], BLANK_CHARACTER, size);
+	}
+	return (grid);
+}
+
+/**
  * menger_print - print a 2-dimensional menger sponge
  *
  * @grid: filled menger sponge
@@ -120,7 +116,7 @@ void menger(int level)
 		return;
 
 	size = pow(3, level);
-	grid = menger_alloc(size);
+	grid = menger_new(size);
 	if (!grid)
 		return;
 
