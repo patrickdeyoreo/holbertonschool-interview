@@ -1,49 +1,38 @@
 #!/usr/bin/python3
-"""
-Place N non-attacking queens on an N×N chessboard.
-"""
+"""Place N non-attacking queens on an N×N chessboard."""
 # pylint: disable=invalid-name
 import sys
 
 
-def solve_n_queens(board, col, n_queens, saved):
-    """
-    Solve N-queens.
-    """
-    if col < n_queens:
-        for row in range(n_queens):
+def solve_n_queens(board, row, n_queens, saved):
+    """Find all N-queens solutions."""
+    if row < n_queens:
+        for col in range(n_queens):
             if queen_is_valid(board, row, col, n_queens):
                 board[row][col] = True
-                if col == n_queens - 1:
+                if row == n_queens - 1:
                     saved.append([row.copy() for row in board])
                     board[row][col] = False
                     break
-                solve_n_queens(board, col + 1, n_queens, saved)
+                solve_n_queens(board, row + 1, n_queens, saved)
                 board[row][col] = False
 
 
 def queen_is_valid(board, row, col, n_queens):
-    """
-    Check if a queen can be placed at the given position.
-    """
-    if any(board[row][x] for x in range(col)):
+    """Check if a queen can be placed at a given position."""
+    if any(board[row][col] for row in range(row)):
         return False
-
     diag = zip(reversed(range(row)), reversed(range(col)))
-    if any(board[y][x] for y, x in diag):
+    if any(board[row][col] for row, col in diag):
         return False
-
-    diag = zip(range(row + 1, n_queens), reversed(range(col)))
-    if any(board[y][x] for y, x in diag):
+    diag = zip(reversed(range(row)), range(col + 1, n_queens))
+    if any(board[row][col] for row, col in diag):
         return False
-
     return True
 
 
 def main():
-    """
-    Parse arguments and solve N-queens puzzle.
-    """
+    """Parse arguments and solve N-queens."""
     if len(sys.argv) != 2:
         print("Usage: nqueens N")
         return 1
