@@ -51,7 +51,7 @@ def main():
     for board in saved:
         print([[x, y]
                for y, row in enumerate(board)
-               for x, pos in enumerate(row) if pos])
+               for x, val in enumerate(row) if val])
     return 0
 
 
