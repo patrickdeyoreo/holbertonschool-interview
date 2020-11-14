@@ -4,21 +4,29 @@
 const request = require("request");
 const process = require("process");
 
-let url = `https://swapi-api.hbtn.io/api/films/${process.argv[2]}`
+let url = `https://swapi-api.hbtn.io/api/films/${process.argv[2]}`;
 
-request(url, function (error, response, body) {
+request.get(url, function (error, response, body) {
   if (error) {
     console.error(error);
-  } else if (response) {
+  } else {
     const film = JSON.parse(body);
+    let characters = [];
     for (let i = 0; i < film.characters.length; i++) {
-      request(film.characters[i], function (error, response, body) {
-        if (error) {
-          console.error(error);
-        } else if (response) {
-          console.log(JSON.parse(body)["name"]);
-        }
+      characters[i] = new Promise((resolve, reject) => {
+        request.get(film.characters[i], function (error, response, body) {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(JSON.parse(body).name);
+          }
+        });
       });
     }
+    Promise.all(characters).then((values) => {
+      for (let i = 0; i < values.length; i++) {
+        console.log(values[i]);
+      }
+    });
   }
 });
