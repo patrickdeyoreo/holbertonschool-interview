@@ -6,7 +6,7 @@ const process = require("process");
 
 let url = `https://swapi-api.hbtn.io/api/films/${process.argv[2]}`;
 
-request.get(url, function (error, response, body) {
+request.get(url, (error, response, body) => {
   if (error) {
     console.error(error);
   } else {
@@ -14,7 +14,7 @@ request.get(url, function (error, response, body) {
     let characters = [];
     for (let i = 0; i < film.characters.length; i++) {
       characters[i] = new Promise((resolve, reject) => {
-        request.get(film.characters[i], function (error, response, body) {
+        request.get(film.characters[i], (error, response, body) => {
           if (error) {
             reject(error);
           } else {
