@@ -30,7 +30,12 @@ function getFilmCharacters (url) {
 }
 
 getFilmCharacters(api + process.argv[2]).then((characters) => {
-  Promise.all(characters.map(getCharacterName)).then((names) => {
-    names.forEach(console.log);
+  for (let i = 0; i < characters.length; i++) {
+    characters[i] = getCharacterName(characters[i]);
+  }
+  Promise.all(characters).then((names) => {
+    for (let i = 0; i < names.length; i++) {
+      console.log(names[i]);
+    }
   });
 });
