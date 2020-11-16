@@ -2,9 +2,8 @@
 // Query the Starwars API for a list of characters from a given film
 
 const request = require('request');
-const process = require('process');
 
-const url = `https://swapi-api.hbtn.io/api/films/${process.argv[2]}`;
+const url = 'https://swapi-api.hbtn.io/api/films/' + process.argv[2];
 
 request.get(url, (error, response, body) => {
   if (error) {
