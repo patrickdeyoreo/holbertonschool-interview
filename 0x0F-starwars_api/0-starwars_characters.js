@@ -3,7 +3,7 @@
 
 const request = require('request');
 
-const url = 'https://swapi-api.hbtn.io/api/films/' + process.argv[2];
+const api = 'https://swapi-api.hbtn.io/api/films/';
 
 function getCharacterName (url) {
   return new Promise((resolve, reject) => {
@@ -29,13 +29,8 @@ function getFilmCharacters (url) {
   });
 }
 
-getFilmCharacters(url).then((characters) => {
-  for (let i = 0; i < characters.length; i++) {
-    characters[i] = getCharacterName(characters[i]);
-  }
-  Promise.all(characters).then((names) => {
-    for (let i = 0; i < names.length; i++) {
-      console.log(names[i]);
-    }
+getFilmCharacters(api + process.argv[2]).then((characters) => {
+  Promise.all(characters.map(getCharacterName)).then((names) => {
+    names.forEach(console.log);
   });
 });
