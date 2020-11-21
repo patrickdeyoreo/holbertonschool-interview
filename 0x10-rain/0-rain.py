@@ -10,12 +10,12 @@ def rain(walls: list) -> int:
     water = 0
     while lhs < rhs:
         if walls[lhs] < walls[rhs]:
-            low = walls[lhs]
+            lower = walls[lhs]
             lhs += 1
         else:
-            low = walls[rhs]
+            lower = walls[rhs]
             rhs -= 1
-        if low > level:
-            level = low
-        water += level - low
+        if level < lower:
+            level = lower
+        water += level - lower
     return water
