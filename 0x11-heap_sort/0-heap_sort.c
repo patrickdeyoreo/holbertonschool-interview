@@ -5,25 +5,6 @@
 #define HEAP_RCHILD_INDEX(node_index) (((node_index) * 2) + 2)
 
 /**
- * swap - swap elements
- *
- * @array: pointer to the array
- * @size: sizeo of the array
- * @i: index of element to swap
- * @j: index of element to swap
- */
-static void swap(int *array, size_t size, size_t i, size_t j)
-{
-	if (i < size && j < size && i != j)
-	{
-		array[i] ^= array[j];
-		array[j] ^= array[i];
-		array[i] ^= array[j];
-	}
-}
-
-
-/**
  * pswap - swap elements and print array
  *
  * @array: pointer to the array
@@ -33,7 +14,9 @@ static void swap(int *array, size_t size, size_t i, size_t j)
  */
 static void pswap(int *array, size_t size, size_t i, size_t j)
 {
-	swap(array, size, i, j);
+	array[i] ^= array[j];
+	array[j] ^= array[i];
+	array[i] ^= array[j];
 	print_array(array, size);
 }
 
