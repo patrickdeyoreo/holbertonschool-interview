@@ -44,7 +44,7 @@ static int _advanced_binary(int *array, size_t start, size_t stop, int value)
 	if (array[index] > value)
 		return (_advanced_binary(array, start, index, value));
 	if (index && array[index - 1] == value)
-		return (_advanced_binary(array, start, index, value));
+		return (_advanced_binary(array, start, index + 1, value));
 	return (index);
 }
 
