@@ -24,11 +24,11 @@ def count_words(subreddit, wordlist, count=None, after=None):
         data = response.json().get('data')
         page = Counter(
             word for article in data.get('children')
-            for word in article.get('data').get('title').lower().split()
+            for word in article.get('data').get('title').casefold().split()
         )
         for word in wordlist:
-            if word.lower() in page:
-                count[word] += page.get(word.lower())
+            if word.casefold() in page:
+                count[word.casefold()] += page.get(word.casefold())
         if data.get('after') is None:
             by_key = sorted(count.items(), key=lambda x: x[0])
             for key, value in sorted(by_key, key=lambda x: x[1], reverse=True):
