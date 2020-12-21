@@ -3,28 +3,11 @@
 #include "binary_trees.h"
 
 /**
- * _heap_extract_replace_root - replace the root of a heap
- *
- * @root: address of a pointer to the root of a heap
- * @node: pointer to the replacement node
- */
-static void _heap_extract_replace_root(heap_t **root, heap_t *node)
-{
-	node->left = node != (*root)->left ? (*root)->left : NULL;
-	if (node->left)
-		node->left->parent = node;
-	node->right = node != (*root)->right ? (*root)->right : NULL;
-	if (node->right)
-		node->right->parent = node;
-	node->parent = NULL;
-	free(*root);
-	*root = node != *root ? node : NULL;
-}
-
-/**
  * _heap_size - measure the size of a binary heap
  *
  * @root: pointer to the root of the heap to measure
+ *
+ * Return: size of the heap pointed to by root
  */
 static size_t _heap_size(heap_t *root)
 {
@@ -86,7 +69,15 @@ static void _heap_extract(heap_t **root, size_t size)
 		child = parent->left;
 		parent->left = NULL;
 	}
-	_heap_extract_replace_root(root, child);
+	child->left = child != (*root)->left ? (*root)->left : NULL;
+	if (child->left)
+		child->left->parent = child;
+	child->right = child != (*root)->right ? (*root)->right : NULL;
+	if (child->right)
+		child->right->parent = child;
+	child->parent = NULL;
+	free(*root);
+	*root = child != *root ? child : NULL;
 	_heap_extract_sift_down(*root);
 }
 
