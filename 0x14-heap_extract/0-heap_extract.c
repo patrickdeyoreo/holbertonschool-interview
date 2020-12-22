@@ -43,15 +43,14 @@ static void _heap_extract_sift_down(heap_t *root)
 }
 
 /**
- * _heap_extract - extract the value at the root of a binary heap
+ * _heap_extract - remove the root value of a max binary heap
  *
- * @root: address of a pointer to the root of the heap
+ * @root: pointer to the root of the heap
  * @size: size of the heap
  */
-static void _heap_extract(heap_t **root, size_t size)
+static void _heap_extract(heap_t *root, size_t size)
 {
-	heap_t *parent = *root;
-	heap_t *child = NULL;
+	heap_t *parent = root;
 	size_t path = size >> 1;
 	size_t msb = 0;
 
@@ -61,25 +60,20 @@ static void _heap_extract(heap_t **root, size_t size)
 		parent = (path >> msb) & 1 ? parent->right : parent->left;
 	if (size & 1)
 	{
-		child = parent->right;
+		root->n = parent->right->n;
+		free(parent->right);
 		parent->right = NULL;
 	}
 	else
 	{
-		child = parent->left;
+		root->n = parent->left->n;
+		free(parent->left);
 		parent->left = NULL;
 	}
-	child->left = child != (*root)->left ? (*root)->left : NULL;
-	if (child->left)
-		child->left->parent = child;
-	child->right = child != (*root)->right ? (*root)->right : NULL;
-	if (child->right)
-		child->right->parent = child;
-	child->parent = NULL;
-	free(*root);
-	*root = child != *root ? child : NULL;
-	_heap_extract_sift_down(*root);
+	_heap_extract_sift_down(root);
 }
+
+
 
 /**
  * heap_extract - extract the root value of a max binary heap
@@ -100,6 +94,14 @@ int heap_extract(heap_t **root)
 	if (!size)
 		return (0);
 	n = (*root)->n;
-	_heap_extract(root, size);
+	if (size == 1)
+	{
+		free(*root);
+		*root = NULL;
+	}
+	else
+	{
+		_heap_extract(*root, size);
+	}
 	return (n);
 }
