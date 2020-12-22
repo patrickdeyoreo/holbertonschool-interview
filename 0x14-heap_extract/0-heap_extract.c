@@ -100,14 +100,6 @@ int heap_extract(heap_t **root)
 	if (!size)
 		return (0);
 	n = (*root)->n;
-	if (size > 1)
-	{
-		_heap_extract(root, size);
-	}
-	else
-	{
-		free(*root);
-		*root = NULL;
-	}
+	_heap_extract(root, size);
 	return (n);
 }
