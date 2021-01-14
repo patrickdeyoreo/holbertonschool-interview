@@ -39,28 +39,51 @@ static void list_delete(list_t *list)
 }
 
 /**
- * _list_print_reverse - print a list in reverse (subroutine)
+ * list_print - print a list
  *
  * @list: pointer to the start of a list
  */
-static void _list_print_reverse(list_t *list)
+static void list_print(list_t *list)
 {
-	if (list)
+	while (list)
 	{
-		_list_print_reverse(list->next);
 		_putchar(list->c);
+		list = list->next;
 	}
+	_putchar('\n');
 }
 
 /**
- * list_print_reverse - print a list in reverse
+ * _list_reverse - reverse a list (subroutine)
  *
- * @list: pointer to the start of a list
+ * @list: address of a pointer to the start of a list
+ * @node: pointer to the current node being reversed
+ *
+ * Return: address of the 'next' pointer of the last reversed node
  */
-static void list_print_reverse(list_t *list)
+static list_t **_list_reverse(list_t **list, list_t *node)
 {
-	_list_print_reverse(list);
-	_putchar('\n');
+	if (node->next)
+	{
+		list = _list_reverse(list, node->next);
+		node->next = NULL;
+	}
+	*list = node;
+	return (&node->next);
+}
+
+/**
+ * list_reverse - reverse a list
+ *
+ * @list: address of a pointer to the start of a list
+ *
+ * Return: pointer to the start of the reversed list
+ */
+static list_t *list_reverse(list_t **list)
+{
+	if (*list)
+		_list_reverse(list, *list);
+	return (*list);
 }
 
 /**
@@ -91,26 +114,6 @@ static int _isnonneg(const char *s)
 	while (*s)
 	{
 		if (!_isdigit(*s++))
-			return (0);
-	}
-	return (1);
-}
-
-/**
- * _iszero - determine if a string is zero
- *
- * @s: the string to check
- *
- * Return: If s contains only zeros, return 1.
- * Otherwise, return 0.
- */
-static int _iszero(const char *s)
-{
-	if (!*s)
-		return (0);
-	while (*s)
-	{
-		if (*s++ != '0')
 			return (0);
 	}
 	return (1);
@@ -170,8 +173,7 @@ static size_t _strlen(const char *s)
  * @a: string representation of an integer
  * @b: string representation of an integer
  *
- * Return: If memory allocation fails, return NULL.
- * Otherwise, return a pointer to the result.
+ * Return: pointer to the resulting list
  */
 static list_t *mul(const char *a, const char *b)
 {
@@ -223,24 +225,25 @@ static list_t *mul(const char *a, const char *b)
  *
  * Usage: mul num1 num2
  *
- * Return: If memory allocation fails, exit with status EXIT_FAILURE.
- * If the number of arguments is incorrect or either num1 or num2 is
- * composed of non-digit characters, exit with status 98.
+ * Return: If the number of arguments is incorrect or either num1 or num2
+ * is composed of non-digit characters, exit with status 98.
  * Otherwise, return EXIT_SUCCESS.
  */
 int main(int argc, char **argv)
 {
 	list_t *result = NULL;
+	list_t *output = NULL;
 
 	if (argc != 3 || !_isnonneg(argv[1]) || !_isnonneg(argv[2]))
 		_error(98, "Error");
-	if (_iszero(argv[1]) || _iszero(argv[2]))
-		result = list_create('0');
+	result = mul(argv[1], argv[2]);
+	output = list_reverse(&result);
+	while (output && output->c == '0')
+		output = output->next;
+	if (output)
+		list_print(output);
 	else
-		result = mul(argv[1], argv[2]);
-	if (!result)
-		_error(EXIT_FAILURE, NULL);
-	list_print_reverse(result);
+		_puts("0");
 	list_delete(result);
 	return (EXIT_SUCCESS);
 }
