@@ -3,7 +3,7 @@
 /**
  * find_listint_loop - locate a loop in a singly linked list
  *
- * @head - pointer to the head of a list
+ * @head: pointer to the head of a list
  *
  * Return: If there is no loop, return NULL.
  * Otherwise, return a pointer to the first node in the loop.
