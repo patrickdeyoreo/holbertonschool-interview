@@ -7,8 +7,8 @@
  * _merge_sort - initiate merge sort
  *
  * @array: array to be sorted
- * @temp: temporary array for holding sorted elements
  * @size: size of the array
+ * @temp: temporary array for holding sorted elements
  */
 static void _merge_sort(int *array, size_t size, int *temp)
 {
