@@ -15,15 +15,15 @@ def makeChange(coins, total):
         If the amount cannot be produced by the given denominations, return -1.
         Otherwise return the fewest number of coins needed to make the amount.
     """
-    if total > 0:
-        level = [0]
-        queue = []
-        n_coins = 0
+    if total != 0:
         checked = [True]
         checked.extend(False for _ in range(total))
-        while level:
+        n_coins = 0
+        queue = [0]
+        while queue:
             n_coins += 1
-            for value in level:
+            level = []
+            for value in queue:
                 for coin in coins:
                     if value + coin == total:
                         return n_coins
@@ -31,8 +31,7 @@ def makeChange(coins, total):
                         continue
                     if not checked[value + coin]:
                         checked[value + coin] = True
-                        queue.append(value + coin)
-            level = queue.copy()
-            queue.clear()
+                        level.append(value + coin)
+            queue = level
         return -1
     return 0
