@@ -15,7 +15,7 @@ def makeChange(coins, total):
         If the amount cannot be produced by the given denominations, return -1.
         Otherwise return the fewest number of coins needed to make the amount.
     """
-    if total != 0:
+    if total > 0:
         checked = [True]
         checked.extend(False for _ in range(total))
         n_coins = 0
