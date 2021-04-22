@@ -11,10 +11,10 @@
  * struct trie_s - trie structure
  *
  * @children: array of child nodes
- * @word: whether or not this is a word
+ * @is_word: whether or not this is a word
  * @count: how many instances of this word
- * @left: how many instances left to find
- * @val: pointer to word
+ * @remaining: how many instances of this word left to find
+ * @word: pointer to word
  */
 typedef struct trie_s
 {

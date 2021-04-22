@@ -11,7 +11,9 @@
  * @nb_words: number of words
  * @nodes: array of trie nodes to populate
  */
-static void trie_build(trie_t *root, char const **words, int nb_words, trie_t **nodes)
+static void trie_build(
+	trie_t *root, char const **words, int nb_words, trie_t **nodes
+)
 {
 	char const *str = NULL;
 	trie_t *node = NULL;
@@ -93,6 +95,11 @@ static void trie_delete(trie_t *root)
  * @words: words to find
  * @nb_words: number of elements in @words
  * @n: address at which to store the number of elements in the returned array
+ * @s_len: length of string @s
+ * @root: root of a trie
+ * @nodes: trie nodes
+ * @memo: memoization array
+ * @indices: starting indices
  *
  * Return: If no substring is found, return NULL.  Otherwise, allocate and
  * return an array containing the starting index of each substring.
