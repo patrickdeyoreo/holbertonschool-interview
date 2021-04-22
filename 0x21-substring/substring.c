@@ -89,59 +89,6 @@ static void trie_delete(trie_t *root)
 }
 
 /**
- * _find_substring - find all substrings containing all words in a given list
- *
- * @s: string to search
- * @words: words to find
- * @nb_words: number of elements in @words
- * @n: address at which to store the number of elements in the returned array
- * @s_len: length of string @s
- * @root: root of a trie
- * @nodes: trie nodes
- * @memo: memoization array
- * @indices: starting indices
- *
- * Return: If no substring is found, return NULL.  Otherwise, allocate and
- * return an array containing the starting index of each substring.
- */
-static void _find_substring(
-	char const *s, char const **words, int nb_words, int *n, int s_len,
-	trie_t *root, trie_t **nodes, trie_t **memo, int *indices
-)
-{
-	int i = 0;
-	int j = 0;
-	int k = strlen(words[0]);
-	int matches = 0;
-
-	while (i < s_len)
-	{
-		matches = 0;
-		for (j = i; j <= s_len - k; j += k)
-		{
-			if ((memo[j] && memo[j]->remaining-- > 0) ||
-				trie_search(root, (char *)s + j, k, memo, j))
-			{
-				matches += 1;
-				if (matches == nb_words)
-				{
-					indices[*n] = i;
-					*n += 1;
-					break;
-				}
-			}
-			else
-			{
-				break;
-			}
-		}
-		for (j = 0; j < nb_words; j += 1)
-			nodes[j]->remaining = nodes[j]->count;
-		i += 1;
-	}
-}
-
-/**
  * find_substring - find all substrings containing all words in a given list
  *
  * @s: string to search
@@ -154,30 +101,44 @@ static void _find_substring(
  */
 int *find_substring(char const *s, char const **words, int nb_words, int *n)
 {
-	int s_len = strlen(s);
-	trie_t *root = calloc(1, sizeof(*root));
-	trie_t **nodes = calloc(nb_words, sizeof(*nodes));
-	trie_t **memo = calloc(s_len, sizeof(*memo));
-	int *indices = calloc(s_len, sizeof(*indices));
-
-	if (!indices || !root || !nodes || !memo)
-		exit(1);
+	int i = 0, j, k, slen, matches;
+	trie_t *root, **nodes, **memo;
+	int *indices;
 
 	*n = 0;
+	slen = strlen(s);
+	k = strlen(words[0]);
+	indices = calloc(slen, sizeof(int));
+	root = calloc(1, sizeof(trie_t));
+	nodes = calloc(nb_words, sizeof(*nodes));
+	memo = calloc(slen, sizeof(*memo));
+	if (!indices || !root || !nodes || !memo)
+		exit(1);
 	trie_build(root, words, nb_words, nodes);
 
-	_find_substring(
-		s, words, nb_words, n, s_len, root, nodes, memo, indices
-	);
-
-	trie_delete(root);
-	free(nodes);
-	free(memo);
-
-	if (*n == 0)
+	for (i = 0; i < slen; i++)
 	{
-		free(indices);
-		return (NULL);
+		matches = 0;
+		for (j = i; j <= slen - k; j += k)
+		{
+			if ((memo[j] && memo[j]->remaining-- > 0) ||
+				trie_search(root, (char *)s + j, k, memo, j))
+			{
+				if (++matches == nb_words)
+				{
+					indices[*n] = i;
+					*n += 1;
+					break;
+				}
+			}
+			else
+				break;
+		}
+		for (j = 0; j < nb_words; j++)
+			nodes[j]->remaining = nodes[j]->count;
 	}
+	trie_delete(root), free(nodes), free(memo);
+	if (*n == 0)
+		indices = (free(indices), NULL);
 	return (indices);
 }
