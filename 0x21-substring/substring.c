@@ -54,11 +54,13 @@ static void trie_build(
  */
 static int trie_search(trie_t *node, char *str, int k, trie_t **memo, int j)
 {
-	for (; k; str++, k--)
+	while (k)
 	{
 		if (!node->children[CHILD_INDEX(*str)])
 			return (0);
 		node = node->children[CHILD_INDEX(*str)];
+		str += 1;
+		k -= 1;
 	}
 	memo[j] = node;
 	if (node->remaining-- > 0)

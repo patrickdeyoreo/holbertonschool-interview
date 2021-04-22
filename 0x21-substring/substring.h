@@ -2,7 +2,6 @@
 #define _SUBSTRING_H_
 
 #include <stdbool.h>
-#include <stddef.h>
 
 #define NB_CHILDREN 26
 #define CHILD_INDEX(c) ((c) - 'a')
@@ -20,8 +19,8 @@ typedef struct trie_s
 {
 	struct trie_s *children[NB_CHILDREN];
 	char *word;
-	size_t count;
-	size_t remaining;
+	int count;
+	int remaining;
 	bool is_word;
 } trie_t;
 
