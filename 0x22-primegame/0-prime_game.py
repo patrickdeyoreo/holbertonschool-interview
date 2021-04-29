@@ -21,35 +21,33 @@ def isWinner(x, nums):
         If the winner cannot be determined, return None. Otherwise, return the
         name of the player that won the most rounds.
     """
-
     if x < 1:
         return None
 
     nums = list(nums)
-    if len(nums) < 1:
+    if len(nums) == 0:
         return None
-
     n = max(nums)
+
     sieve = [True for _ in range(max(n + 1, 2))]
     for i in range(2, int(n ** 0.5) + 1):
         if sieve[i]:
-            for j in range(i ** 2, n + 1, i):
+            for j in range(i * i, n + 1, i):
                 sieve[j] = False
     sieve[0] = False
     sieve[1] = False
 
     count = 0
-    for i, _ in enumerate(sieve):
+    for i in range(len(sieve)):
         if sieve[i]:
             count += 1
         sieve[i] = count
 
     score = 0
-    for n in nums:
-        if sieve[n] % 2:
-            score += 1
-    if score * 2 > len(nums):
-        return "Maria"
+    for num in nums:
+        score += sieve[num] % 2 == 1
     if score * 2 < len(nums):
         return "Ben"
+    if score * 2 > len(nums):
+        return "Maria"
     return None
