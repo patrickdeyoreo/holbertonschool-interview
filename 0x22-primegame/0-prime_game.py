@@ -5,7 +5,6 @@ from 1 up to and including n, they take turns choosing a prime number from the
 set and removing that number and its multiples from the set. The player that
 cannot make a move loses the game.
 """
-# pylint: disable=invalid-name
 
 
 def isWinner(x, nums):
@@ -22,7 +21,6 @@ def isWinner(x, nums):
         If the winner cannot be determined, return None. Otherwise, return the
         name of the player that won the most rounds.
     """
-    # pylint: disable=unused-argument
 
     if x < 1:
         return None
